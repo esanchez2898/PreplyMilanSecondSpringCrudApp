@@ -4,25 +4,30 @@ import com.qualitystream.tutorial.dto.EmployeeDTO;
 import com.qualitystream.tutorial.entity.EmployeeEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor // Lombok crea el constructor para hacer injection
+@RequiredArgsConstructor // Lombok automatically generates the constructor for dependency injection
 public class EmployeeConverter {
 
     private final ModelMapper modelMapper;
 
-    // Setter/Method Injection, es mejor usar constructor injection
+    // Example of Setter/Method Injection.
+    // Constructor Injection is generally recommended because:
+    // - Dependencies are required at object creation time
+    // - It improves immutability
+    // - It makes testing easier
 //    @Autowired
 //    private void initialize(ModelMapper modelMapper) {
 //        this.modelMapper = modelMapper;
 //    }
 
+    // Converts Entity -> DTO
     public EmployeeDTO entityToDto(EmployeeEntity employeeEntity) {
         return modelMapper.map(employeeEntity, EmployeeDTO.class);
     }
 
+    // Converts DTO -> Entity
     public EmployeeEntity dtoToEntity(EmployeeDTO employeeDTO) {
         return modelMapper.map(employeeDTO, EmployeeEntity.class);
     }

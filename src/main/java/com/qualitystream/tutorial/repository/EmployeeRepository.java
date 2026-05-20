@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Integer> {
-
-
-
+    // JpaRepository<MyEntityName, "ID 'integer' or 'string'?">
+    // JpaRepository give us all the basic CRUD methods, like:
+    // save(), findById(), findAll(), deleteById()
 }
