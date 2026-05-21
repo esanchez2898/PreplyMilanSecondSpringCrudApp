@@ -6,30 +6,38 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Optional;
+
 @Component
-@RequiredArgsConstructor // Lombok automatically generates the constructor for dependency injection
+@RequiredArgsConstructor // Lombok generates the constructor for dependency injection
 public class EmployeeConverter {
 
+        // EXTERNAL LIBRARY tool for automatic object mapping -> We have to create the Bean manually.
     private final ModelMapper modelMapper;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // Example of Setter/Method Injection.
-    // Constructor Injection is generally recommended because:
-    // - Dependencies are required at object creation time
-    // - It improves immutability
-    // - It makes testing easier
-//    @Autowired
-//    private void initialize(ModelMapper modelMapper) {
-//        this.modelMapper = modelMapper;
-//    }
 
-    // Converts Entity -> DTO
+    // Converts database Entity to API DTO
     public EmployeeDTO entityToDto(EmployeeEntity employeeEntity) {
-        return modelMapper.map(employeeEntity, EmployeeDTO.class);
+
+        EmployeeDTO returnValue = modelMapper.map(employeeEntity, EmployeeDTO.class);
+        Optional<LocalDate> localDateOptional = Optional.ofNullable(employeeEntity.getDateStart());
+        if (localDateOptional.isPresent()) {
+            LocalDate localDate = localDateOptional.get();
+            returnValue.setDateStart(dateTimeFormatter.format(localDate));
+        }
+
+        return returnValue;
     }
 
-    // Converts DTO -> Entity
+    // Converts API DTO to database Entity
     public EmployeeEntity dtoToEntity(EmployeeDTO employeeDTO) {
         return modelMapper.map(employeeDTO, EmployeeEntity.class);
     }
+
+
 
 }

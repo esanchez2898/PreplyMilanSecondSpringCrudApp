@@ -10,6 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan(basePackages = "com.qualitystream.tutorial")
 public class SpringBootConfig implements WebMvcConfigurer {
 
+    // Registers ModelMapper as a Bean, allowing Spring to manage
+    // its lifecycle and inject it wherever needed
     @Bean
     ModelMapper getModelMapper() {
         return new ModelMapper();
