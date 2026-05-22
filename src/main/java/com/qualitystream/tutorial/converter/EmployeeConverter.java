@@ -24,6 +24,7 @@ public class EmployeeConverter {
     public EmployeeDTO entityToDto(EmployeeEntity employeeEntity) {
 
         EmployeeDTO returnValue = modelMapper.map(employeeEntity, EmployeeDTO.class);
+
         Optional<LocalDate> localDateOptional = Optional.ofNullable(employeeEntity.getDateStart());
         if (localDateOptional.isPresent()) {
             LocalDate localDate = localDateOptional.get();
@@ -35,7 +36,17 @@ public class EmployeeConverter {
 
     // Converts API DTO to database Entity
     public EmployeeEntity dtoToEntity(EmployeeDTO employeeDTO) {
-        return modelMapper.map(employeeDTO, EmployeeEntity.class);
+
+        EmployeeEntity returnValue = modelMapper.map(employeeDTO, EmployeeEntity.class);
+        Optional<String> localDateOptional = Optional.ofNullable(employeeDTO.getDateStart());
+
+        if (localDateOptional.isPresent()) {
+            String localDateStr = localDateOptional.get();
+            LocalDate localDate = LocalDate.parse(localDateStr, dateTimeFormatter);
+            returnValue.setDateStart(localDate);
+        }
+
+        return returnValue;
     }
 
 

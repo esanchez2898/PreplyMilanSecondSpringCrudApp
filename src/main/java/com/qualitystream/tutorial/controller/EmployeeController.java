@@ -1,11 +1,14 @@
 package com.qualitystream.tutorial.controller;
 
 import com.qualitystream.tutorial.dto.EmployeeDTO;
+import com.qualitystream.tutorial.exception.ValidationFailedException;
 import com.qualitystream.tutorial.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,10 +36,29 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<String> addEmployee(@Validated @RequestBody EmployeeDTO employeeDTO, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new ValidationFailedException("Employee has not been validated");
+        }
         EmployeeDTO employeeDtoSaved = employeeService.addEmployee(employeeDTO);
         return new ResponseEntity<>("Employee with Id: " + employeeDtoSaved.getId() + " was created.", HttpStatus.CREATED);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<String> deleteEmployeeById(@PathVariable("id") Integer employeeId) {
+        employeeService.deleteEmployee(employeeId);
+        return new ResponseEntity<>("Employee with id: " + employeeId + " was deleted", HttpStatus.OK);
+    }
+
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<String> updateEmployeeById(@PathVariable("id") Integer employeeId, @Validated @RequestBody EmployeeDTO employeeDTO, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new ValidationFailedException("Employee has not been validated");
+        }
+
+        EmployeeDTO employeeDtoSaved = employeeService.updateEmployee(employeeId, employeeDTO);
+        return new ResponseEntity<>("Employee with Id: " + employeeDtoSaved.getId() + " was updated.", HttpStatus.CREATED);
+    }
 
 }

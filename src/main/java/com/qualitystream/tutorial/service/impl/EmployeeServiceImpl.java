@@ -3,6 +3,7 @@ package com.qualitystream.tutorial.service.impl;
 import com.qualitystream.tutorial.converter.EmployeeConverter;
 import com.qualitystream.tutorial.dto.EmployeeDTO;
 import com.qualitystream.tutorial.entity.EmployeeEntity;
+import com.qualitystream.tutorial.exception.EmployeeAlreadyExistException;
 import com.qualitystream.tutorial.exception.EmployeeNotFoundException;
 import com.qualitystream.tutorial.repository.EmployeeRepository;
 import com.qualitystream.tutorial.service.EmployeeService;
@@ -45,9 +46,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDTO addEmployee(EmployeeDTO employeeDTO) {
 
-//        if (employeeRepository.findById(employeeDTO.getId()).isPresent()) {
-//            throw new RuntimeException("Ya existe bro :v");
-//        }
+        if (employeeRepository.findByEmail(employeeDTO.getEmail()).isPresent()) {
+            throw new EmployeeAlreadyExistException("The employee Already Exist");
+        }
         EmployeeEntity employeeEntitySaved = employeeRepository.save(employeeConverter.dtoToEntity(employeeDTO));
         return employeeConverter.entityToDto(employeeEntitySaved);
     }
@@ -68,12 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void deleteEmployee(Integer employeeId) {
-
-        if (employeeRepository.findById(employeeId).isEmpty()) {
-            throw new RuntimeException("No existe ese employee bro");
-        }
-
+        getById(employeeId);
         employeeRepository.deleteById(employeeId);
-
     }
 }
