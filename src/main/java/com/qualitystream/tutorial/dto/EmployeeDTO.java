@@ -1,5 +1,6 @@
 package com.qualitystream.tutorial.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ public class EmployeeDTO implements Serializable {
     @Email(regexp = ".+[@].+[\\.].+")
     @NotEmpty
     @Size(max = 50)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String email;
 
     @NotEmpty

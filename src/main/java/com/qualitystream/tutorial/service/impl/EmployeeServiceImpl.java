@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -57,9 +58,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDTO updateEmployee(Integer employeeId, EmployeeDTO employeeDTO) {
 
-        EmployeeEntity existingEmployee =
-                employeeRepository.findById(employeeId)
-                        .orElseThrow(() -> new EmployeeNotFoundException("The employee with id " + employeeId + " has not been found"));
+        EmployeeDTO currentEmployee = getById(employeeId);
+
+        if (employeeRepository.findByEmail(employeeDTO.getEmail()).isPresent()) {
+            if (!Objects.equals(currentEmployee.getEmail(), employeeDTO.getEmail())) {
+                throw new EmployeeAlreadyExistException("The employee email already Exist");
+            }
+        }
+
         employeeDTO.setId(employeeId);
 
         EmployeeEntity employeeEntity = employeeRepository.save(employeeConverter.dtoToEntity(employeeDTO));

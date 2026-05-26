@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter
@@ -41,5 +42,12 @@ public class EmployeeEntity implements Serializable {
 
     @Column(nullable = false, length = 100)
     private String location;
+
+    @Column(nullable = false, name = "time_updated")
+    private Timestamp timeUpdated;
+
+    @Column(nullable = false, name = "time_created")
+    private Timestamp timeCreated;
+
 
 }
