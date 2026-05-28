@@ -18,6 +18,17 @@
         <start-class>com.radovan.spring.EurekaServerApplication</start-class>
     </properties>
 
+    <build>
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+            <plugins> <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.4.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,16 +101,5 @@
         </dependency>
 
     </dependencies>
-
-    <build>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-            <plugins> <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 
 </project>

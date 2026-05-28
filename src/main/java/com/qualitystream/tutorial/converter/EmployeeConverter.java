@@ -5,6 +5,8 @@ import com.qualitystream.tutorial.entity.EmployeeEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -16,9 +18,11 @@ public class EmployeeConverter {
     // ModelMapper automatically maps fields with the same name between two objects (e.g. Entity <-> DTO)
     // It must be declared as a Spring Bean manually in a @Configuration class
     private final ModelMapper modelMapper;
+    private final TimeConversionUtils timeConversionUtils;
 
     // Defines the date format pattern we expect: year-month-day (e.g. 2024-03-15)
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
 
     /**
      * Converts database Entity ---> API DTO.
@@ -30,10 +34,18 @@ public class EmployeeConverter {
         EmployeeDTO returnValue = modelMapper.map(employeeEntity, EmployeeDTO.class);   // 95% match
 
         Optional<LocalDate> dateStartOptional = Optional.ofNullable(employeeEntity.getDateStart());
+        Optional<Timestamp> timeUpdatedOptional = Optional.ofNullable(employeeEntity.getTimeUpdated());
+        Optional<Timestamp> timeCreatedOptional = Optional.ofNullable(employeeEntity.getTimeCreated());
+
 
         if (dateStartOptional.isPresent()) {
             LocalDate dateStart = dateStartOptional.get();                        // Extract the LocalDate from the Optional box
             returnValue.setDateStart(dateTimeFormatter.format(dateStart));        // the other 5%          // Convert LocalDate -> String (e.g. "2024-03-15")
+        }
+
+        if(timeUpdatedOptional.isPresent()) {
+            Timestamp timeUpdated = timeUpdatedOptional.get();
+            returnValue.setTimeUpdated(timeConversionUtils.timestampToString(timeUpdated));
         }
 
         return returnValue; // 100%

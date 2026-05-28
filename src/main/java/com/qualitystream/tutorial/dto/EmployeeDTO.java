@@ -48,4 +48,10 @@ public class EmployeeDTO implements Serializable {
     @NotEmpty
     private String location;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String timeUpdated;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String timeCreated;
+
 }

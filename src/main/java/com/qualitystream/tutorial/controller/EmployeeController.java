@@ -11,6 +11,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -59,6 +62,16 @@ public class EmployeeController {
 
         EmployeeDTO employeeDtoSaved = employeeService.updateEmployee(employeeId, employeeDTO);
         return new ResponseEntity<>("Employee with Id: " + employeeDtoSaved.getId() + " was updated.", HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/timezones")
+    public ResponseEntity<List<String>> getTimezones() {
+
+        List<String> timezones = new ArrayList<>(ZoneId.getAvailableZoneIds());
+        Collections.sort(timezones);
+
+        return new ResponseEntity<>(timezones, HttpStatus.OK);
+
     }
 
 }
