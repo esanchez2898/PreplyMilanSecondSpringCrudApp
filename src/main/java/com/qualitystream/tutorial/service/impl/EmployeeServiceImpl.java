@@ -1,6 +1,7 @@
 package com.qualitystream.tutorial.service.impl;
 
 import com.qualitystream.tutorial.converter.EmployeeConverter;
+import com.qualitystream.tutorial.converter.TimeConversionUtils;
 import com.qualitystream.tutorial.dto.EmployeeDTO;
 import com.qualitystream.tutorial.entity.EmployeeEntity;
 import com.qualitystream.tutorial.exception.EmployeeAlreadyExistException;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeConverter employeeConverter;
+    private final TimeConversionUtils timeConversionUtils;
 
     @Override
     @Transactional(readOnly = true)
@@ -50,7 +54,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeRepository.findByEmail(employeeDTO.getEmail()).isPresent()) {
             throw new EmployeeAlreadyExistException("The employee Already Exist");
         }
-        EmployeeEntity employeeEntitySaved = employeeRepository.save(employeeConverter.dtoToEntity(employeeDTO));
+
+        EmployeeEntity employeeEntity = employeeConverter.dtoToEntity(employeeDTO);
+
+        employeeEntity.setTimeCreated(timeConversionUtils.getMexicoTimestamp());
+        employeeEntity.setTimeUpdated(timeConversionUtils.getMexicoTimestamp());
+
+        EmployeeEntity employeeEntitySaved = employeeRepository.save(employeeEntity);
         return employeeConverter.entityToDto(employeeEntitySaved);
     }
 
@@ -68,8 +78,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeDTO.setId(employeeId);
 
-        EmployeeEntity employeeEntity = employeeRepository.save(employeeConverter.dtoToEntity(employeeDTO));
-        return employeeConverter.entityToDto(employeeEntity);
+        employeeDTO.setTimeCreated(currentEmployee.getTimeCreated());
+
+        EmployeeEntity employeeEntity = employeeConverter.dtoToEntity(employeeDTO);
+
+        //employeeEntity.setTimeCreated(timeConversionUtils.stringToTimestamp(currentEmployee.getTimeCreated()));
+
+        employeeEntity.setTimeUpdated(timeConversionUtils.getMexicoTimestamp());
+
+        EmployeeEntity employeeEntitySaved = employeeRepository.save(employeeEntity);
+
+        //EmployeeEntity employeeEntity = employeeRepository.save(employeeConverter.dtoToEntity(employeeDTO));
+        return employeeConverter.entityToDto(employeeEntitySaved);
     }
 
     @Override

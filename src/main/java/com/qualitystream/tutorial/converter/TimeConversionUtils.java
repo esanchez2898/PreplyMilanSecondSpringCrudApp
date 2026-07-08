@@ -1,5 +1,7 @@
 package com.qualitystream.tutorial.converter;
 
+import org.springframework.stereotype.Component;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -8,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+@Component
 public class TimeConversionUtils {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -33,10 +36,7 @@ public class TimeConversionUtils {
     public Timestamp getMexicoTimestamp() {
         ZonedDateTime mexicoTime = Instant.now().atZone(zoneId);
         return Timestamp.valueOf(mexicoTime.toLocalDateTime());
-
     }
-
-
 
 
 }
